@@ -17,24 +17,20 @@ export default function QrCode() {
 
   return (
     <>
-      <div className="container mt-3">
-        <div className="row">
-          <div className="col-12 col-sm-6">
-            <section className="qrcode">
+      <div className="container mt-3 ">
+        <div className="row d-flex align-items-center justify-content-center">
+          <div className="col-12 col-sm-7 ">
+            <section className="qrcode d-flex align-items-center justify-content-center">
               <QrReader
                 delay={300}
                 onError={handleError}
                 onScan={HandleScan}
-                style={{ width: "50%" }}
+                style={{ width: "60%" }}
               />
-              <p className="m-5">{`ClientID: ${result}`}</p>
+              {/* <p className="m-5">{`ClientID: ${result}`}</p> */}
             </section>
-
-            {/* <button class="" onClick={handleClick} value={result}>
-              Scanned Code: {result}
-            </button> */}
           </div>
-          <div>
+          <div className="col-12 col-sm-7 d-flex align-items-center justify-content-center">
             <SearchClient result={result} />
           </div>
         </div>

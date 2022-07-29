@@ -8,7 +8,7 @@ function Kitchen() {
   useEffect(() => {
     const storedToken = localStorage.getItem("authToken");
     axios
-      .get("/api/order/kitchen", {
+      .get("https://foodstrap-berlin.herokuapp.com/api/order/kitchen", {
         headers: { Authorization: `Bearer ${storedToken}` },
       })
       .then((response) => {

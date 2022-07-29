@@ -1,19 +1,25 @@
 import React, { useState, useEffect } from "react";
+import UserContext from "../context/UserContext";
 import axios from "axios";
 
+// react bootstrap
+import Card from "react-bootstrap/Card";
+import ListGroup from "react-bootstrap/ListGroup";
+import Alert from "react-bootstrap/Alert";
+
 function SearchClient(props) {
-  console.log(props.result);
-  const [client, setClient] = useState("");
+  console.log(`this is props.result: ${props.result}`);
+  const [client, setClient] = useState([]);
   const [errorMessage, setErrorMessage] = useState(undefined);
 
   useEffect(() => {
     const storedToken = localStorage.getItem("authToken");
     axios
-      .get(`https://foodstrap-berlin.herokuapp.com/api/auth/${props.result}`, {
+      .get(`/api/auth/${props.result}`, {
         headers: { Authorization: `Bearer ${storedToken}` },
       })
       .then((response) => {
-        console.log(response);
+        console.log(response.data);
         const data = response.data;
         console.log(`this is data: ${data}`);
         setClient(data);
@@ -22,8 +28,29 @@ function SearchClient(props) {
         const errorDescription = err.response.data.message;
         setErrorMessage(errorDescription);
       });
-  });
-  console.log(`this is client: ${client}`);
+  }, [props.result]);
+
+  // console.log(`this is client: ${client.username}`);
+
+  ///////////// store order on database ////////////////
+  const requestBody = {
+    client: client._id,
+    username: client.username,
+    email: client.email,
+  };
+  console.log(requestBody);
+  const storedToken = localStorage.getItem("authToken");
+  axios
+    .post("https://foodstrap-berlin.herokuapp.com/api/order/bill", requestBody, {
+      headers: { Authorization: `Bearer ${storedToken}` },
+    })
+    .then((response) => {
+      console.log(response.data);
+    })
+    .catch((err) => {
+      const errorDescription = err.response.data.message;
+      setErrorMessage(errorDescription);
+    });
 
   return (
     <>
@@ -31,10 +58,27 @@ function SearchClient(props) {
         <h3>Loading...</h3>
       ) : (
         <>
-          <h1>Client Details</h1>
-          <h3>{client.username}</h3>
-          <h5>{client.email}</h5>
-          <h5>{client}</h5>
+          <Alert key="info" variant="info">
+            <Card className="mt-3" style={{ width: "24rem" }}>
+              <Card.Header>
+                <strong>Username: </strong>
+                {client.username}
+              </Card.Header>
+              <ListGroup variant="flush">
+                <ListGroup.Item>
+                  <strong>Email: </strong>
+                  {client.email}
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <strong>ID: </strong>
+                  {client._id}
+                </ListGroup.Item>
+                {/* <ListGroup.Item>Last time in resto: </ListGroup.Item> */}
+              </ListGroup>
+              <Card.Link href="/orders">make an order</Card.Link>
+            </Card>
+          </Alert>
+          <UserContext.Provider value={client}></UserContext.Provider>
         </>
       )}
     </>

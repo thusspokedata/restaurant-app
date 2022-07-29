@@ -4,11 +4,15 @@ export default function MenuItem(props) {
   const [quantity, setQuantity] = useState(0);
   //   [finalPrice, setFinalPrice] = useState(0);
   const [subtotal, setSubtotal] = useState(0);
+  const [toCook, setToCook] = useState([]);
 
   const handleQuantityChange = (e, subtotal) => {
     setQuantity(e.target.value);
     setSubtotal(props.item.price * e.target.value);
     props.calcFinalPrice(props.item.price * e.target.value - subtotal);
+    setToCook(`${e.target.value} of ${props.item.productName}`);
+    props.toKitchen(`${e.target.value} of ${props.item.productName} && `);
+    console.log(`this is subtotal ${e}`);
   };
 
   return (
